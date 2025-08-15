@@ -29,19 +29,6 @@ export class GuruDigitalManager implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Credential to connect with',
-				name: 'credential',
-				type: 'options',
-				options: [
-					{
-						name: 'Guru Digital Manager API',
-						value: 'guruDigitalManagerApi',
-					},
-				],
-				default: 'guruDigitalManagerApi',
-				noDataExpression: true,
-			},
-			{
 				displayName: 'Resource',
 				name: 'resource',
 				type: 'options',
@@ -662,18 +649,17 @@ export class GuruDigitalManager implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
-		const credential = this.getNodeParameter('credential', 0) as string;
 		const resource = this.getNodeParameter('resource', 0) as string;
 		const operation = this.getNodeParameter('operation', 0) as string;
 
 		// Get credentials
-		const credentials = await this.getCredentials(credential);
+		const credentials = await this.getCredentials('guruDigitalManagerApi');
 		if (!credentials) {
 			throw new NodeOperationError(this.getNode(), 'Credentials are required!');
 		}
 
-		const baseURL = credentials.baseUrl as string;
-		const apiKey = credentials.apiKey as string;
+		const baseURL = 'https://api.guru.com.br';
+		const userToken = credentials.userToken as string;
 
 		for (let i = 0; i < items.length; i++) {
 			try {
@@ -688,7 +674,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'POST',
 								url: `${baseURL}/contacts`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 								body: contactData.contactFields,
@@ -702,7 +688,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'GET',
 								url: `${baseURL}/contacts/${contactId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 							});
@@ -731,7 +717,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'GET',
 								url: `${baseURL}/contacts`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 								qs: params,
@@ -746,7 +732,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'PUT',
 								url: `${baseURL}/contacts/${updateContactId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 								body: updateContactData.contactFields,
@@ -760,7 +746,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'DELETE',
 								url: `${baseURL}/contacts/${deleteContactId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 							});
@@ -779,7 +765,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'GET',
 								url: `${baseURL}/transactions/${transactionId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 							});
@@ -808,7 +794,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'GET',
 								url: `${baseURL}/transactions`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 								qs: params,
@@ -823,7 +809,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'PUT',
 								url: `${baseURL}/transactions/${updateTransactionId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 								body: updateTransactionData.transactionFields,
@@ -837,7 +823,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'DELETE',
 								url: `${baseURL}/transactions/${deleteTransactionId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 							});
@@ -856,7 +842,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'GET',
 								url: `${baseURL}/subscriptions/${subscriptionId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 							});
@@ -870,7 +856,7 @@ export class GuruDigitalManager implements INodeType {
 									method: 'GET',
 									url: `${baseURL}/subscriptions`,
 									headers: {
-										'Authorization': `Bearer ${apiKey}`,
+										'Authorization': `Bearer ${userToken}`,
 										'Content-Type': 'application/json',
 									},
 								});
@@ -881,7 +867,7 @@ export class GuruDigitalManager implements INodeType {
 									method: 'GET',
 									url: `${baseURL}/subscriptions?limit=${limit}`,
 									headers: {
-										'Authorization': `Bearer ${apiKey}`,
+										'Authorization': `Bearer ${userToken}`,
 										'Content-Type': 'application/json',
 									},
 								});
@@ -896,7 +882,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'PUT',
 								url: `${baseURL}/subscriptions/${updateSubscriptionId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 								body: updateSubscriptionData.subscriptionFields,
@@ -910,7 +896,7 @@ export class GuruDigitalManager implements INodeType {
 								method: 'DELETE',
 								url: `${baseURL}/subscriptions/${deleteSubscriptionId}`,
 								headers: {
-									'Authorization': `Bearer ${apiKey}`,
+									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
 								},
 							});
