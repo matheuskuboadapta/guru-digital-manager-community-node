@@ -109,6 +109,12 @@ export class GuruDigitalManager implements INodeType {
 				},
 				options: [
 					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new transaction',
+						action: 'Create a transaction',
+					},
+					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a transaction',
@@ -148,6 +154,12 @@ export class GuruDigitalManager implements INodeType {
 					},
 				},
 				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new subscription',
+						action: 'Create a subscription',
+					},
 					{
 						name: 'Delete',
 						value: 'delete',
@@ -323,7 +335,7 @@ export class GuruDigitalManager implements INodeType {
 				},
 				displayOptions: {
 					show: {
-						operation: ['update'],
+						operation: ['create', 'update'],
 						resource: ['transaction'],
 					},
 				},
@@ -564,7 +576,7 @@ export class GuruDigitalManager implements INodeType {
 				},
 				displayOptions: {
 					show: {
-						operation: ['update'],
+						operation: ['create', 'update'],
 						resource: ['subscription'],
 					},
 				},
@@ -759,6 +771,20 @@ export class GuruDigitalManager implements INodeType {
 				} else if (resource === 'transaction') {
 					// Handle transaction operations
 					switch (operation) {
+						case 'create':
+							const transactionData = this.getNodeParameter('transactionData', i) as IDataObject;
+							const createResponse = await this.helpers.httpRequest({
+								method: 'POST',
+								url: `${baseURL}/transactions`,
+								headers: {
+									'Authorization': `Bearer ${userToken}`,
+									'Content-Type': 'application/json',
+								},
+								body: transactionData.transactionFields,
+							});
+							responseData = createResponse;
+							break;
+
 						case 'get':
 							const transactionId = this.getNodeParameter('transactionId', i) as string;
 							const getResponse = await this.helpers.httpRequest({
@@ -836,6 +862,20 @@ export class GuruDigitalManager implements INodeType {
 				} else if (resource === 'subscription') {
 					// Handle subscription operations
 					switch (operation) {
+						case 'create':
+							const subscriptionData = this.getNodeParameter('subscriptionData', i) as IDataObject;
+							const createSubResponse = await this.helpers.httpRequest({
+								method: 'POST',
+								url: `${baseURL}/subscriptions`,
+								headers: {
+									'Authorization': `Bearer ${userToken}`,
+									'Content-Type': 'application/json',
+								},
+								body: subscriptionData.subscriptionFields,
+							});
+							responseData = createSubResponse;
+							break;
+
 						case 'get':
 							const subscriptionId = this.getNodeParameter('subscriptionId', i) as string;
 							const getResponse = await this.helpers.httpRequest({
