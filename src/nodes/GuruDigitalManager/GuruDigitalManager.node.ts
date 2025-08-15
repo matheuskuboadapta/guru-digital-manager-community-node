@@ -658,7 +658,7 @@ export class GuruDigitalManager implements INodeType {
 			throw new NodeOperationError(this.getNode(), 'Credentials are required!');
 		}
 
-		const baseURL = 'https://api.digitalmanager.guru';
+		const baseURL = 'https://digitalmanager.guru/api/v2';
 		const userToken = credentials.userToken as string;
 
 		for (let i = 0; i < items.length; i++) {

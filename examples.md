@@ -13,7 +13,7 @@ Primeiro, configure as credenciais da API do Guru Digital Manager:
 3. Selecione **Guru Digital Manager API**
 4. Preencha:
    - **API Key**: Sua chave de API do Guru Digital Manager
-   - **Base URL**: https://api.digitalmanager.guru (ou sua URL personalizada)
+   - **Base URL**: https://digitalmanager.guru/api/v2 (ou sua URL personalizada)
 
 ## Exemplos de Fluxos
 
