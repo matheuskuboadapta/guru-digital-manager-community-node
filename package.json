@@ -25,7 +25,7 @@
   "bugs": {
     "url": "https://github.com/matheuskuboadapta/guru-digital-manager-community-node/issues"
   },
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc && gulp build:icons",
     "dev": "tsc --watch",
@@ -41,6 +41,9 @@
     "n8nNodesApiVersion": 1,
     "nodes": [
       "dist/nodes/GuruDigitalManager/GuruDigitalManager.node.js"
+    ],
+    "credentials": [
+      "dist/credentials/GuruDigitalManagerApi.credentials.js"
     ]
   },
   "devDependencies": {
