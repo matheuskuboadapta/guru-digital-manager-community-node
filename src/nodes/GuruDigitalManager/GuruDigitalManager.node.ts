@@ -12,7 +12,7 @@ export class GuruDigitalManager implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Guru Digital Manager',
 		name: 'guruDigitalManager',
-		icon: 'file:guruDigitalManager.svg',
+		icon: 'file:guruDigitalManager.png',
 		group: ['transform'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
@@ -117,12 +117,6 @@ export class GuruDigitalManager implements INodeType {
 				},
 				options: [
 					{
-						name: 'Create',
-						value: 'create',
-						description: 'Create a new transaction',
-						action: 'Create a transaction',
-					},
-					{
 						name: 'Delete',
 						value: 'delete',
 						description: 'Delete a transaction',
@@ -162,12 +156,6 @@ export class GuruDigitalManager implements INodeType {
 					},
 				},
 				options: [
-					{
-						name: 'Create',
-						value: 'create',
-						description: 'Create a new subscription',
-						action: 'Create a subscription',
-					},
 					{
 						name: 'Delete',
 						value: 'delete',
@@ -261,6 +249,86 @@ export class GuruDigitalManager implements INodeType {
 					},
 				],
 			},
+			// Contact filters for GetAll
+			{
+				displayName: 'Use Filters',
+				name: 'useFilters',
+				type: 'boolean',
+				default: false,
+				displayOptions: {
+					show: {
+						operation: ['getAll'],
+						resource: ['contact'],
+					},
+				},
+				description: 'Whether to use filters for the contact search',
+			},
+			{
+				displayName: 'Filters',
+				name: 'filters',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: false,
+				},
+				displayOptions: {
+					show: {
+						operation: ['getAll'],
+						resource: ['contact'],
+						useFilters: [true],
+					},
+				},
+				default: {},
+				options: [
+					{
+						name: 'filterFields',
+						displayName: 'Filter Fields',
+						values: [
+							{
+								displayName: 'Name',
+								name: 'name',
+								type: 'string',
+								default: '',
+								description: 'Filter by contact name',
+							},
+							{
+								displayName: 'Email',
+								name: 'email',
+								type: 'string',
+								default: '',
+								description: 'Filter by contact email',
+							},
+							{
+								displayName: 'Document',
+								name: 'doc',
+								type: 'string',
+								default: '',
+								description: 'Filter by document (CPF/CNPJ)',
+							},
+							{
+								displayName: 'Created At Start',
+								name: 'created_at_ini',
+								type: 'dateTime',
+								default: '',
+								description: 'Filter by creation date start (YYYY-MM-DD)',
+							},
+							{
+								displayName: 'Created At End',
+								name: 'created_at_end',
+								type: 'dateTime',
+								default: '',
+								description: 'Filter by creation date end (YYYY-MM-DD)',
+							},
+							{
+								displayName: 'Cursor',
+								name: 'cursor',
+								type: 'string',
+								default: '',
+								description: 'Pagination cursor for next page',
+							},
+						],
+					},
+				],
+			},
 			// Transaction specific fields
 			{
 				displayName: 'Transaction ID',
@@ -285,7 +353,7 @@ export class GuruDigitalManager implements INodeType {
 				},
 				displayOptions: {
 					show: {
-						operation: ['create', 'update'],
+						operation: ['update'],
 						resource: ['transaction'],
 					},
 				},
@@ -358,7 +426,7 @@ export class GuruDigitalManager implements INodeType {
 				},
 				displayOptions: {
 					show: {
-						operation: ['create', 'update'],
+						operation: ['update'],
 						resource: ['subscription'],
 					},
 				},
@@ -447,11 +515,15 @@ export class GuruDigitalManager implements INodeType {
 		const operation = this.getNodeParameter('operation', 0) as string;
 		const credentials = await this.getCredentials('guruDigitalManagerApi');
 
+		if (!credentials) {
+			throw new NodeOperationError(this.getNode(), 'Credentials are required!');
+		}
+
 		// Set up axios with authentication
 		const axiosInstance = axios.create({
 			baseURL: credentials.baseUrl as string,
 			headers: {
-				'Authorization': credentials.apiKey as string,
+				'Authorization': `Bearer ${credentials.apiKey}`,
 				'Content-Type': 'application/json',
 			},
 		});
@@ -477,14 +549,25 @@ export class GuruDigitalManager implements INodeType {
 
 						case 'getAll':
 							const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-							if (returnAll) {
-								const getAllResponse = await axiosInstance.get('/contacts');
-								responseData = getAllResponse.data;
-							} else {
-								const limit = this.getNodeParameter('limit', i) as number;
-								const getAllResponse = await axiosInstance.get(`/contacts?limit=${limit}`);
-								responseData = getAllResponse.data;
+							const useFilters = this.getNodeParameter('useFilters', i) as boolean;
+							
+							let url = '/contacts';
+							const params: IDataObject = {};
+							
+							if (useFilters) {
+								const filters = this.getNodeParameter('filters', i) as IDataObject;
+								if (filters.filterFields) {
+									Object.assign(params, filters.filterFields);
+								}
 							}
+							
+							if (!returnAll) {
+								const limit = this.getNodeParameter('limit', i) as number;
+								params.limit = limit;
+							}
+							
+							const getAllResponse = await axiosInstance.get(url, { params });
+							responseData = getAllResponse.data;
 							break;
 
 						case 'update':
@@ -506,12 +589,6 @@ export class GuruDigitalManager implements INodeType {
 				} else if (resource === 'transaction') {
 					// Handle transaction operations
 					switch (operation) {
-						case 'create':
-							const transactionData = this.getNodeParameter('transactionData', i) as IDataObject;
-							const response = await axiosInstance.post('/transactions', transactionData.transactionFields);
-							responseData = response.data;
-							break;
-
 						case 'get':
 							const transactionId = this.getNodeParameter('transactionId', i) as string;
 							const getResponse = await axiosInstance.get(`/transactions/${transactionId}`);
@@ -549,12 +626,6 @@ export class GuruDigitalManager implements INodeType {
 				} else if (resource === 'subscription') {
 					// Handle subscription operations
 					switch (operation) {
-						case 'create':
-							const subscriptionData = this.getNodeParameter('subscriptionData', i) as IDataObject;
-							const response = await axiosInstance.post('/subscriptions', subscriptionData.subscriptionFields);
-							responseData = response.data;
-							break;
-
 						case 'get':
 							const subscriptionId = this.getNodeParameter('subscriptionId', i) as string;
 							const getResponse = await axiosInstance.get(`/subscriptions/${subscriptionId}`);
