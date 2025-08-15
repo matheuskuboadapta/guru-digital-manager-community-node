@@ -27,15 +27,20 @@ export class GuruDigitalManager implements INodeType {
 				required: true,
 			},
 		],
-		requestDefaults: {
-			baseURL: '={{$credentials.guruDigitalManagerApi.baseUrl}}',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json',
-				'Authorization': 'Bearer {{$credentials.guruDigitalManagerApi.apiKey}}',
-			},
-		},
 		properties: [
+			{
+				displayName: 'Credential to connect with',
+				name: 'credential',
+				type: 'options',
+				options: [
+					{
+						name: 'Guru Digital Manager API',
+						value: 'guruDigitalManagerApi',
+					},
+				],
+				default: 'guruDigitalManagerApi',
+				noDataExpression: true,
+			},
 			{
 				displayName: 'Resource',
 				name: 'resource',
@@ -657,8 +662,18 @@ export class GuruDigitalManager implements INodeType {
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
+		const credential = this.getNodeParameter('credential', 0) as string;
 		const resource = this.getNodeParameter('resource', 0) as string;
 		const operation = this.getNodeParameter('operation', 0) as string;
+
+		// Get credentials
+		const credentials = await this.getCredentials(credential);
+		if (!credentials) {
+			throw new NodeOperationError(this.getNode(), 'Credentials are required!');
+		}
+
+		const baseURL = credentials.baseUrl as string;
+		const apiKey = credentials.apiKey as string;
 
 		for (let i = 0; i < items.length; i++) {
 			try {
@@ -671,7 +686,11 @@ export class GuruDigitalManager implements INodeType {
 							const contactData = this.getNodeParameter('contactData', i) as IDataObject;
 							const response = await this.helpers.httpRequest({
 								method: 'POST',
-								url: '/contacts',
+								url: `${baseURL}/contacts`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 								body: contactData.contactFields,
 							});
 							responseData = response;
@@ -681,7 +700,11 @@ export class GuruDigitalManager implements INodeType {
 							const contactId = this.getNodeParameter('contactId', i) as string;
 							const getResponse = await this.helpers.httpRequest({
 								method: 'GET',
-								url: `/contacts/${contactId}`,
+								url: `${baseURL}/contacts/${contactId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 							});
 							responseData = getResponse;
 							break;
@@ -706,7 +729,11 @@ export class GuruDigitalManager implements INodeType {
 							
 							const getAllResponse = await this.helpers.httpRequest({
 								method: 'GET',
-								url: '/contacts',
+								url: `${baseURL}/contacts`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 								qs: params,
 							});
 							responseData = getAllResponse;
@@ -717,7 +744,11 @@ export class GuruDigitalManager implements INodeType {
 							const updateContactData = this.getNodeParameter('contactData', i) as IDataObject;
 							const updateResponse = await this.helpers.httpRequest({
 								method: 'PUT',
-								url: `/contacts/${updateContactId}`,
+								url: `${baseURL}/contacts/${updateContactId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 								body: updateContactData.contactFields,
 							});
 							responseData = updateResponse;
@@ -727,7 +758,11 @@ export class GuruDigitalManager implements INodeType {
 							const deleteContactId = this.getNodeParameter('contactId', i) as string;
 							await this.helpers.httpRequest({
 								method: 'DELETE',
-								url: `/contacts/${deleteContactId}`,
+								url: `${baseURL}/contacts/${deleteContactId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 							});
 							responseData = { success: true, message: 'Contact deleted successfully' };
 							break;
@@ -742,7 +777,11 @@ export class GuruDigitalManager implements INodeType {
 							const transactionId = this.getNodeParameter('transactionId', i) as string;
 							const getResponse = await this.helpers.httpRequest({
 								method: 'GET',
-								url: `/transactions/${transactionId}`,
+								url: `${baseURL}/transactions/${transactionId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 							});
 							responseData = getResponse;
 							break;
@@ -767,7 +806,11 @@ export class GuruDigitalManager implements INodeType {
 							
 							const getAllResponse = await this.helpers.httpRequest({
 								method: 'GET',
-								url: '/transactions',
+								url: `${baseURL}/transactions`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 								qs: params,
 							});
 							responseData = getAllResponse;
@@ -778,7 +821,11 @@ export class GuruDigitalManager implements INodeType {
 							const updateTransactionData = this.getNodeParameter('transactionData', i) as IDataObject;
 							const updateResponse = await this.helpers.httpRequest({
 								method: 'PUT',
-								url: `/transactions/${updateTransactionId}`,
+								url: `${baseURL}/transactions/${updateTransactionId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 								body: updateTransactionData.transactionFields,
 							});
 							responseData = updateResponse;
@@ -788,7 +835,11 @@ export class GuruDigitalManager implements INodeType {
 							const deleteTransactionId = this.getNodeParameter('transactionId', i) as string;
 							await this.helpers.httpRequest({
 								method: 'DELETE',
-								url: `/transactions/${deleteTransactionId}`,
+								url: `${baseURL}/transactions/${deleteTransactionId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 							});
 							responseData = { success: true, message: 'Transaction deleted successfully' };
 							break;
@@ -803,7 +854,11 @@ export class GuruDigitalManager implements INodeType {
 							const subscriptionId = this.getNodeParameter('subscriptionId', i) as string;
 							const getResponse = await this.helpers.httpRequest({
 								method: 'GET',
-								url: `/subscriptions/${subscriptionId}`,
+								url: `${baseURL}/subscriptions/${subscriptionId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 							});
 							responseData = getResponse;
 							break;
@@ -813,14 +868,22 @@ export class GuruDigitalManager implements INodeType {
 							if (returnAll) {
 								const getAllResponse = await this.helpers.httpRequest({
 									method: 'GET',
-									url: '/subscriptions',
+									url: `${baseURL}/subscriptions`,
+									headers: {
+										'Authorization': `Bearer ${apiKey}`,
+										'Content-Type': 'application/json',
+									},
 								});
 								responseData = getAllResponse;
 							} else {
 								const limit = this.getNodeParameter('limit', i) as number;
 								const getAllResponse = await this.helpers.httpRequest({
 									method: 'GET',
-									url: `/subscriptions?limit=${limit}`,
+									url: `${baseURL}/subscriptions?limit=${limit}`,
+									headers: {
+										'Authorization': `Bearer ${apiKey}`,
+										'Content-Type': 'application/json',
+									},
 								});
 								responseData = getAllResponse;
 							}
@@ -831,7 +894,11 @@ export class GuruDigitalManager implements INodeType {
 							const updateSubscriptionData = this.getNodeParameter('subscriptionData', i) as IDataObject;
 							const updateResponse = await this.helpers.httpRequest({
 								method: 'PUT',
-								url: `/subscriptions/${updateSubscriptionId}`,
+								url: `${baseURL}/subscriptions/${updateSubscriptionId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 								body: updateSubscriptionData.subscriptionFields,
 							});
 							responseData = updateResponse;
@@ -841,7 +908,11 @@ export class GuruDigitalManager implements INodeType {
 							const deleteSubscriptionId = this.getNodeParameter('subscriptionId', i) as string;
 							await this.helpers.httpRequest({
 								method: 'DELETE',
-								url: `/subscriptions/${deleteSubscriptionId}`,
+								url: `${baseURL}/subscriptions/${deleteSubscriptionId}`,
+								headers: {
+									'Authorization': `Bearer ${apiKey}`,
+									'Content-Type': 'application/json',
+								},
 							});
 							responseData = { success: true, message: 'Subscription deleted successfully' };
 							break;
