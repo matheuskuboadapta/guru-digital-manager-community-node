@@ -35,7 +35,7 @@ Alteramos o `main` de `index.js` para `dist/index.js`:
 ### 1. Definição da Credencial
 - Arquivo: `src/credentials/GuruDigitalManagerApi.credentials.ts`
 - Define apenas o campo necessário: `userToken` (Bearer token)
-- Base URL é fixa: `https://api.guru.com.br`
+- Base URL é fixa: `https://api.digitalmanager.guru`
 - Implementa a interface `ICredentialType`
 
 ### 2. Registro no Sistema
@@ -47,7 +47,7 @@ Alteramos o `main` de `index.js` para `dist/index.js`:
 - O node usa automaticamente a credencial `guruDigitalManagerApi`
 - As credenciais são obtidas via `this.getCredentials('guruDigitalManagerApi')`
 - O token é usado como `Bearer {user_token}` nas requisições HTTP
-- Base URL é fixa: `https://api.guru.com.br`
+- Base URL é fixa: `https://api.digitalmanager.guru`
 
 ## Como Usar
 
