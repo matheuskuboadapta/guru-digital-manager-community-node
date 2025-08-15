@@ -28,6 +28,8 @@ Para usar este node, você precisa configurar as credenciais da API do Guru Digi
 1. **API Key**: Sua chave de API do Guru Digital Manager
 2. **Base URL**: URL base da API (padrão: https://api.guru.com.br)
 
+> **Nota**: Se você encontrar o erro "Node does not have any credentials set", certifique-se de que está usando a versão 1.5.1 ou superior do pacote. Veja [CREDENTIALS_SETUP.md](CREDENTIALS_SETUP.md) para instruções detalhadas de configuração.
+
 ## Nodes
 
 ### Guru Digital Manager
