@@ -688,6 +688,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 								body: contactData.contactFields,
 							});
@@ -779,6 +780,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 								body: transactionData.transactionFields,
 							});
@@ -793,6 +795,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 							});
 							responseData = getResponse;
@@ -816,12 +819,14 @@ export class GuruDigitalManager implements INodeType {
 								params.limit = limit;
 							}
 							
+							// Add Accept header for better compatibility
 							const getAllResponse = await this.helpers.httpRequest({
 								method: 'GET',
 								url: `${baseURL}/transactions`,
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 								qs: params,
 							});
@@ -837,6 +842,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 								body: updateTransactionData.transactionFields,
 							});
@@ -851,6 +857,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 							});
 							responseData = { success: true, message: 'Transaction deleted successfully' };
