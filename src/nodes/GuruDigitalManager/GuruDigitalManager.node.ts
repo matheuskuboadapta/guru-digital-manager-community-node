@@ -807,10 +807,19 @@ export class GuruDigitalManager implements INodeType {
 							
 							const params: IDataObject = {};
 							
-							// Add any additional fields as query parameters
+							// Add any additional fields as query parameters with validation
 							Object.keys(additionalFields).forEach(key => {
 								if (additionalFields[key] !== undefined && additionalFields[key] !== '') {
-									params[key] = additionalFields[key];
+									// Validate date parameters
+									if (key.includes('_ini') || key.includes('_end')) {
+										// Ensure date format is YYYY-MM-DD
+										const dateValue = additionalFields[key] as string;
+										if (dateValue && /^\d{4}-\d{2}-\d{2}$/.test(dateValue)) {
+											params[key] = dateValue;
+										}
+									} else {
+										params[key] = additionalFields[key];
+									}
 								}
 							});
 							
@@ -877,6 +886,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 								body: subscriptionData.subscriptionFields,
 							});
@@ -891,6 +901,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 							});
 							responseData = getResponse;
@@ -905,6 +916,7 @@ export class GuruDigitalManager implements INodeType {
 									headers: {
 										'Authorization': `Bearer ${userToken}`,
 										'Content-Type': 'application/json',
+										'Accept': 'application/json',
 									},
 								});
 								responseData = getAllResponse;
@@ -916,6 +928,7 @@ export class GuruDigitalManager implements INodeType {
 									headers: {
 										'Authorization': `Bearer ${userToken}`,
 										'Content-Type': 'application/json',
+										'Accept': 'application/json',
 									},
 								});
 								responseData = getAllResponse;
@@ -931,6 +944,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 								body: updateSubscriptionData.subscriptionFields,
 							});
@@ -945,6 +959,7 @@ export class GuruDigitalManager implements INodeType {
 								headers: {
 									'Authorization': `Bearer ${userToken}`,
 									'Content-Type': 'application/json',
+									'Accept': 'application/json',
 								},
 							});
 							responseData = { success: true, message: 'Subscription deleted successfully' };
