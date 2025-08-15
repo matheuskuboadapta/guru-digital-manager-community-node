@@ -29,7 +29,7 @@ export class GuruDigitalManager implements INodeType {
 			},
 		],
 		requestDefaults: {
-			baseURL: '={{$credentials.baseUrl}}',
+			baseURL: '={{$credentials.guruDigitalManagerApi.baseUrl}}',
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
@@ -249,83 +249,61 @@ export class GuruDigitalManager implements INodeType {
 					},
 				],
 			},
-			// Contact filters for GetAll
+			// Contact filters for GetAll - Dynamic system
 			{
-				displayName: 'Use Filters',
-				name: 'useFilters',
-				type: 'boolean',
-				default: false,
-				displayOptions: {
-					show: {
-						operation: ['getAll'],
-						resource: ['contact'],
-					},
-				},
-				description: 'Whether to use filters for the contact search',
-			},
-			{
-				displayName: 'Filters',
-				name: 'filters',
-				type: 'fixedCollection',
-				typeOptions: {
-					multipleValues: false,
-				},
-				displayOptions: {
-					show: {
-						operation: ['getAll'],
-						resource: ['contact'],
-						useFilters: [true],
-					},
-				},
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
 				default: {},
+				displayOptions: {
+					show: {
+						operation: ['getAll'],
+						resource: ['contact'],
+					},
+				},
 				options: [
 					{
-						name: 'filterFields',
-						displayName: 'Filter Fields',
-						values: [
-							{
-								displayName: 'Name',
-								name: 'name',
-								type: 'string',
-								default: '',
-								description: 'Filter by contact name',
-							},
-							{
-								displayName: 'Email',
-								name: 'email',
-								type: 'string',
-								default: '',
-								description: 'Filter by contact email',
-							},
-							{
-								displayName: 'Document',
-								name: 'doc',
-								type: 'string',
-								default: '',
-								description: 'Filter by document (CPF/CNPJ)',
-							},
-							{
-								displayName: 'Created At Start',
-								name: 'created_at_ini',
-								type: 'dateTime',
-								default: '',
-								description: 'Filter by creation date start (YYYY-MM-DD)',
-							},
-							{
-								displayName: 'Created At End',
-								name: 'created_at_end',
-								type: 'dateTime',
-								default: '',
-								description: 'Filter by creation date end (YYYY-MM-DD)',
-							},
-							{
-								displayName: 'Cursor',
-								name: 'cursor',
-								type: 'string',
-								default: '',
-								description: 'Pagination cursor for next page',
-							},
-						],
+						displayName: 'Created At End',
+						name: 'created_at_end',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by creation date end (YYYY-MM-DD)',
+					},
+					{
+						displayName: 'Created At Start',
+						name: 'created_at_ini',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by creation date start (YYYY-MM-DD)',
+					},
+					{
+						displayName: 'Cursor',
+						name: 'cursor',
+						type: 'string',
+						default: '',
+						description: 'Pagination cursor for next page',
+					},
+					{
+						displayName: 'Document',
+						name: 'doc',
+						type: 'string',
+						default: '',
+						description: 'Filter by document (CPF/CNPJ)',
+					},
+					{
+						displayName: 'Email',
+						name: 'email',
+						type: 'string',
+						default: '',
+						description: 'Filter by contact email',
+					},
+					{
+						displayName: 'Name',
+						name: 'name',
+						type: 'string',
+						default: '',
+						description: 'Filter by contact name',
 					},
 				],
 			},
@@ -382,23 +360,191 @@ export class GuruDigitalManager implements INodeType {
 								name: 'status',
 								type: 'options',
 								options: [
-									{
-										name: 'Pending',
-										value: 'pending',
-									},
-									{
-										name: 'Completed',
-										value: 'completed',
-									},
-									{
-										name: 'Failed',
-										value: 'failed',
-									},
+									{ name: 'Abandoned', value: 'abandoned' },
+									{ name: 'Analysis', value: 'analysis' },
+									{ name: 'Approved', value: 'approved' },
+									{ name: 'Billet Printed', value: 'billet_printed' },
+									{ name: 'Blocked', value: 'blocked' },
+									{ name: 'Canceled', value: 'canceled' },
+									{ name: 'Chargeback', value: 'chargeback' },
+									{ name: 'Completed', value: 'completed' },
+									{ name: 'Delayed', value: 'delayed' },
+									{ name: 'Dispute', value: 'dispute' },
+									{ name: 'Expired', value: 'expired' },
+									{ name: 'In Recovery', value: 'in_recovery' },
+									{ name: 'Refunded', value: 'refunded' },
+									{ name: 'Rejected', value: 'rejected' },
+									{ name: 'Scheduled', value: 'scheduled' },
+									{ name: 'Started', value: 'started' },
+									{ name: 'Trial', value: 'trial' },
+									{ name: 'Waiting Payment', value: 'waiting_payment' },
 								],
 								default: 'pending',
 								description: 'Transaction status',
 							},
 						],
+					},
+				],
+			},
+			// Transaction filters for GetAll - Dynamic system
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						operation: ['getAll'],
+						resource: ['transaction'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Cancelled At Start',
+						name: 'cancelled_at_ini',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by cancellation date start',
+					},
+					{
+						displayName: 'Cancelled At End',
+						name: 'cancelled_at_end',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by cancellation date end',
+					},
+					{
+						displayName: 'Confirmed At Start',
+						name: 'confirmed_at_ini',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by confirmation date start',
+					},
+					{
+						displayName: 'Confirmed At End',
+						name: 'confirmed_at_end',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by confirmation date end',
+					},
+					{
+						displayName: 'Contact ID',
+						name: 'contact_id',
+						type: 'string',
+						default: '',
+						description: 'Filter by contact ID',
+					},
+					{
+						displayName: 'Contact Document',
+						name: 'contact_doc',
+						type: 'string',
+						default: '',
+						description: 'Filter by contact document',
+					},
+					{
+						displayName: 'Contact Email',
+						name: 'contact_email',
+						type: 'string',
+						default: '',
+						description: 'Filter by contact email',
+					},
+					{
+						displayName: 'Contact Name',
+						name: 'contact_name',
+						type: 'string',
+						default: '',
+						description: 'Filter by contact name',
+					},
+					{
+						displayName: 'Cursor',
+						name: 'cursor',
+						type: 'string',
+						default: '',
+						description: 'Pagination cursor for next page',
+					},
+					{
+						displayName: 'Invoice ID',
+						name: 'invoice_id',
+						type: 'string',
+						default: '',
+						description: 'Filter by invoice ID',
+					},
+					{
+						displayName: 'Marketplace ID',
+						name: 'marketplace_id',
+						type: 'string',
+						default: '',
+						description: 'Filter by marketplace ID',
+					},
+					{
+						displayName: 'Marketplaces',
+						name: 'marketplaces',
+						type: 'string',
+						default: '',
+						description: 'Filter by marketplaces (comma-separated)',
+					},
+					{
+						displayName: 'Ordered At Start',
+						name: 'ordered_at_ini',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by order date start',
+					},
+					{
+						displayName: 'Ordered At End',
+						name: 'ordered_at_end',
+						type: 'dateTime',
+						default: '',
+						description: 'Filter by order date end',
+					},
+					{
+						displayName: 'Payment Types',
+						name: 'payment_types',
+						type: 'string',
+						default: '',
+						description: 'Filter by payment types (comma-separated)',
+					},
+					{
+						displayName: 'Product ID',
+						name: 'product_id',
+						type: 'string',
+						default: '',
+						description: 'Filter by product ID',
+					},
+					{
+						displayName: 'Subscription ID',
+						name: 'subscription_id',
+						type: 'string',
+						default: '',
+						description: 'Filter by subscription ID',
+					},
+					{
+						displayName: 'Transaction Status',
+						name: 'transaction_status',
+						type: 'options',
+						options: [
+							{ name: 'Abandoned', value: 'abandoned' },
+							{ name: 'Analysis', value: 'analysis' },
+							{ name: 'Approved', value: 'approved' },
+							{ name: 'Billet Printed', value: 'billet_printed' },
+							{ name: 'Blocked', value: 'blocked' },
+							{ name: 'Canceled', value: 'canceled' },
+							{ name: 'Chargeback', value: 'chargeback' },
+							{ name: 'Completed', value: 'completed' },
+							{ name: 'Delayed', value: 'delayed' },
+							{ name: 'Dispute', value: 'dispute' },
+							{ name: 'Expired', value: 'expired' },
+							{ name: 'In Recovery', value: 'in_recovery' },
+							{ name: 'Refunded', value: 'refunded' },
+							{ name: 'Rejected', value: 'rejected' },
+							{ name: 'Scheduled', value: 'scheduled' },
+							{ name: 'Started', value: 'started' },
+							{ name: 'Trial', value: 'trial' },
+							{ name: 'Waiting Payment', value: 'waiting_payment' },
+						],
+						default: '',
+						description: 'Filter by transaction status',
 					},
 				],
 			},
@@ -549,17 +695,17 @@ export class GuruDigitalManager implements INodeType {
 
 						case 'getAll':
 							const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-							const useFilters = this.getNodeParameter('useFilters', i) as boolean;
+							const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
 							
 							let url = '/contacts';
 							const params: IDataObject = {};
 							
-							if (useFilters) {
-								const filters = this.getNodeParameter('filters', i) as IDataObject;
-								if (filters.filterFields) {
-									Object.assign(params, filters.filterFields);
+							// Add any additional fields as query parameters
+							Object.keys(additionalFields).forEach(key => {
+								if (additionalFields[key] !== undefined && additionalFields[key] !== '') {
+									params[key] = additionalFields[key];
 								}
-							}
+							});
 							
 							if (!returnAll) {
 								const limit = this.getNodeParameter('limit', i) as number;
@@ -597,14 +743,25 @@ export class GuruDigitalManager implements INodeType {
 
 						case 'getAll':
 							const returnAll = this.getNodeParameter('returnAll', i) as boolean;
-							if (returnAll) {
-								const getAllResponse = await axiosInstance.get('/transactions');
-								responseData = getAllResponse.data;
-							} else {
+							const additionalFields = this.getNodeParameter('additionalFields', i) as IDataObject;
+							
+							let url = '/transactions';
+							const params: IDataObject = {};
+							
+							// Add any additional fields as query parameters
+							Object.keys(additionalFields).forEach(key => {
+								if (additionalFields[key] !== undefined && additionalFields[key] !== '') {
+									params[key] = additionalFields[key];
+								}
+							});
+							
+							if (!returnAll) {
 								const limit = this.getNodeParameter('limit', i) as number;
-								const getAllResponse = await axiosInstance.get(`/transactions?limit=${limit}`);
-								responseData = getAllResponse.data;
+								params.limit = limit;
 							}
+							
+							const getAllResponse = await axiosInstance.get(url, { params });
+							responseData = getAllResponse.data;
 							break;
 
 						case 'update':
