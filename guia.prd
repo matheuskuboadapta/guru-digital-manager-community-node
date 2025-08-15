@@ -1,0 +1,83 @@
+## Product Requirements Document (PRD) - n8n Community Nodes for Digital Manager Guru
+
+### 1. Introdução
+
+Este documento detalha os requisitos para o desenvolvimento de um conjunto de Community Nodes para a plataforma n8n, destinados à integração com a API da Digital Manager Guru. O objetivo principal é disponibilizar as funcionalidades das APIs de Contatos, Transações e Assinaturas, permitindo que usuários do n8n criem fluxos de automação personalizados e robustos, conectando o Digital Manager Guru a outras ferramentas e sistemas.
+
+### 2. Objetivos
+
+O principal objetivo deste projeto é fornecer aos usuários do n8n a capacidade de interagir programaticamente com os recursos de Contatos, Transações e Assinaturas da Digital Manager Guru, expondo todos os endpoints relevantes dentro dessas categorias para máxima flexibilidade nos fluxos de trabalho.
+
+### 3. Escopo do Projeto
+
+### O escopo inicial deste projeto abrange a criação de nodes n8n para as seguintes categorias da API Digital Manager Guru:
+
+| *   **Contatos (Contacts):** Incluindo todas as operações relacionadas à criação, leitura, atualização e exclusão de registros de contatos. |
+|---|
+
+
+*   **Transações (Transactions):** Incluindo todas as operações relacionadas à criação, leitura, atualização e exclusão de registros de transações.
+*   **Assinaturas (Subscriptions):** Incluindo todas as operações relacionadas à criação, leitura, atualização e exclusão de registros de assinaturas.
+
+Outras categorias de API da Digital Manager Guru, como `Account Token`, `Affiliations`, `Block Lists`, `Checkout`, `Countries`, `Coupons`, `Etickets`, `Leads`, `Myorders`, `Products`, `Users`, `Webhooks` e `Trackings`, estão fora do escopo desta fase inicial do projeto.
+
+### 4. Funcionalidades dos Nodes
+
+Cada node será projetado para ser intuitivo e fácil de usar no ambiente n8n, expondo os métodos de API de forma clara.
+
+#### 4.1. Autenticação com a API Digital Manager Guru
+
+Um método de autenticação será implementado para gerenciar as credenciais da API Digital Manager Guru.
+
+*   **Tipo de Autenticação:** `Header Auth Authorization`.
+*   **Detalhes:** O usuário fornecerá um valor de chave (key) que será enviado no cabeçalho `Authorization` de todas as requisições à API.
+
+#### 4.2. Node: Digital Manager Guru Contatos (Contacts)
+
+Este node permitirá a gestão completa dos contatos no Digital Manager Guru.
+
+*   **Operações Suportadas:**
+    1.  **Listar Contatos:** Recuperar uma lista de todos os contatos ou contatos filtrados.
+    2.  **Obter Contato:** Recuperar detalhes de um contato específico por ID.
+    3.  **Criar Contato:** Adicionar um novo contato com os dados fornecidos.
+    4.  **Atualizar Contato:** Modificar informações de um contato existente por ID.
+    5.  **Excluir Contato:** Remover um contato existente por ID.
+    6.  **Outras operações:** Todas as outras operações de endpoint disponíveis para a API de Contatos.
+
+#### 4.3. Node: Digital Manager Guru Transações (Transactions)
+
+Este node facilitará a interação com os dados de transações.
+
+*   **Operações Suportadas:**
+    1.  **Listar Transações:** Recuperar uma lista de todas as transações ou transações filtradas.
+    2.  **Obter Transação:** Recuperar detalhes de uma transação específica por ID.
+    3.  **Criar Transação:** Registrar uma nova transação.
+    4.  **Atualizar Transação:** Modificar informações de uma transação existente por ID.
+    5.  **Excluir Transação:** Remover uma transação existente por ID.
+    6.  **Outras operações:** Todas as outras operações de endpoint disponíveis para a API de Transações.
+
+#### 4.4. Node: Digital Manager Guru Assinaturas (Subscriptions)
+
+Este node permitirá o gerenciamento de assinaturas.
+
+*   **Operações Suportadas:**
+    1.  **Listar Assinaturas:** Recuperar uma lista de todas as assinaturas ou assinaturas filtradas.
+    2.  **Obter Assinatura:** Recuperar detalhes de uma assinatura específica por ID.
+    3.  **Criar Assinatura:** Registrar uma nova assinatura.
+    4.  **Atualizar Assinatura:** Modificar informações de uma assinatura existente por ID.
+    5.  **Excluir Assinatura:** Remover uma assinatura existente por ID.
+    6.  **Outras operações:** Todas as outras operações de endpoint disponíveis para a API de Assinaturas.
+
+### 5. Requisitos Técnicos
+
+*   **Linguagem de Desenvolvimento:** TypeScript.
+*   **Plataforma:** Compatível com as versões atuais e futuras do n8n.
+*   **Interação com API:** Utilização de requisições HTTP (GET, POST, PUT, DELETE) para interagir com a API Digital Manager Guru.
+*   **Tratamento de Erros:** Implementação de tratamento de erros adequado para requisições de API e validação de dados.
+*   **Mapeamento de Dados:** Mapeamento claro e consistente dos campos da API para as entradas e saídas dos nodes do n8n.
+*   **Testes:** Geração de testes unitários e de integração para garantir a funcionalidade e a robustez dos nodes.
+*   **Documentação:** Acompanhamento da documentação interna para cada node, detalhando as operações, parâmetros e retornos.
+
+### 6. Considerações Adicionais
+
+A construção dos nodes será realizada por uma Inteligência Artificial, o que implica na necessidade de especificações claras e detalhadas de cada endpoint e suas funcionalidades para garantir uma implementação precisa e eficiente. A flexibilidade para que o usuário final decida o fluxo de trabalho é primordial, e isso será alcançado expondo as operações da API da forma mais direta possível.
