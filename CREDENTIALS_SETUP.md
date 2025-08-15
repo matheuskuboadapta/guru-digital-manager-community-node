@@ -34,7 +34,8 @@ Alteramos o `main` de `index.js` para `dist/index.js`:
 
 ### 1. Definição da Credencial
 - Arquivo: `src/credentials/GuruDigitalManagerApi.credentials.ts`
-- Define os campos necessários: `apiKey` e `baseUrl`
+- Define apenas o campo necessário: `userToken` (Bearer token)
+- Base URL é fixa: `https://api.guru.com.br`
 - Implementa a interface `ICredentialType`
 
 ### 2. Registro no Sistema
@@ -43,18 +44,18 @@ Alteramos o `main` de `index.js` para `dist/index.js`:
 - Registradas no `package.json` na seção `n8n.credentials`
 
 ### 3. Uso no Node
-- O node referencia a credencial pelo nome `guruDigitalManagerApi`
-- As credenciais são obtidas via `this.getCredentials(credential)`
-- Usadas para autenticação nas requisições HTTP
+- O node usa automaticamente a credencial `guruDigitalManagerApi`
+- As credenciais são obtidas via `this.getCredentials('guruDigitalManagerApi')`
+- O token é usado como `Bearer {user_token}` nas requisições HTTP
+- Base URL é fixa: `https://api.guru.com.br`
 
 ## Como Usar
 
 1. **Instalar o pacote** no n8n
 2. **Criar uma nova credencial** do tipo "Guru Digital Manager API"
 3. **Configurar**:
-   - API Key: Sua chave de API do Guru
-   - Base URL: URL base da API (padrão: https://api.guru.com.br)
-4. **Usar no node** selecionando a credencial criada
+   - User Token: Seu token de usuário do Guru (formato: Bearer {user_token})
+4. **Usar no node** - a credencial será automaticamente aplicada
 
 ## Estrutura de Arquivos
 

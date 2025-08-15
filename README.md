@@ -25,10 +25,9 @@ Siga as instruções de instalação para [n8n community nodes](https://docs.n8n
 
 Para usar este node, você precisa configurar as credenciais da API do Guru Digital Manager:
 
-1. **API Key**: Sua chave de API do Guru Digital Manager
-2. **Base URL**: URL base da API (padrão: https://api.guru.com.br)
+1. **User Token**: Seu token de usuário do Guru (formato: Bearer {user_token})
 
-> **Nota**: Se você encontrar o erro "Node does not have any credentials set", certifique-se de que está usando a versão 1.5.1 ou superior do pacote. Veja [CREDENTIALS_SETUP.md](CREDENTIALS_SETUP.md) para instruções detalhadas de configuração.
+> **Nota**: Se você encontrar o erro "Node does not have any credentials set", certifique-se de que está usando a versão 1.5.2 ou superior do pacote. Veja [CREDENTIALS_SETUP.md](CREDENTIALS_SETUP.md) para instruções detalhadas de configuração.
 
 ## Nodes
 
